@@ -1,8 +1,9 @@
-import { MicroApp } from 'umi'
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { MicroApp, history } from 'umi'
+import { Layout, Menu, Breadcrumb, } from 'antd';
 import { useState } from 'react';
-import { baseData, baseDataIprops } from '@/utils/side-constant';
+import { baseData,baseDataIprops } from '@/utils/side-constant';
 import './index.css';
+import { MenuProps } from 'rc-menu';
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider, Footer } = Layout;
@@ -14,6 +15,12 @@ const BasicLayout = () => {
   const onAppChange = (first: baseDataIprops) => {
     setSideValue(first.name)
     setBreadArr([first.name, first.second[0].name, first.second[0].third[0].name])
+    history.push(`/${first.name}`)
+  }
+
+  const onSideMenuClick: MenuProps['onSelect'] = (e) => {
+    setBreadArr([sideValue, e.keyPath[1], e.keyPath[0]])
+    history.push(`/${sideValue}/${e.keyPath[1]}/${e.keyPath[0]}`)
   }
   return (
     <Layout>
@@ -41,7 +48,7 @@ const BasicLayout = () => {
               style={{ height: '100%', borderRight: 0 }}
               defaultOpenKeys={['star']}
               defaultSelectedKeys={['earth']}
-              onSelect={(e) => setBreadArr([sideValue, e.keyPath[1], e.keyPath[0]])}
+              onSelect={onSideMenuClick}
             >
               {
                 baseData.filter(v => v.name === sideValue).map((first) => {
